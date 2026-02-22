@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DeckSpinner — Multiplayer Wheel</title>
+    <meta name="description"
+        content="A real-time multiplayer spinning wheel. Add custom segments, spin the wheel, and see everyone's cursors live." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- ── Username Modal ─────────────────────────────────────── -->
+    <div id="username-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon">🎡</div>
+            <h1>DeckSpinner</h1>
+            <p>Enter your name to join the room</p>
+            <input id="username-input" type="text" placeholder="Your name…" maxlength="20" autofocus />
+            <button id="username-submit" class="btn-primary">Join</button>
+        </div>
+    </div>
+
+    <!-- ── Main Layout ────────────────────────────────────────── -->
+    <div id="app" class="app hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">🎡 <span>DeckSpinner</span></div>
+                <div id="user-badge" class="user-badge"></div>
+            </div>
+
+            <div class="sidebar-section">
+                <label for="segments-input" class="label">Wheel Segments</label>
+                <p class="hint">One option per line</p>
+                <textarea id="segments-input" rows="12" placeholder="Option 1&#10;Option 2&#10;Option 3"></textarea>
+            </div>
+
+            <button id="spin-btn" class="btn-spin">
+                <span class="spin-icon">🎯</span>
+                <span>SPIN</span>
+            </button>
+
+            <div id="winner-display" class="winner-display hidden">
+                <div class="winner-label">🏆 Winner</div>
+                <div id="winner-text" class="winner-text"></div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div id="online-count" class="online-badge">1 online</div>
+            </div>
+        </aside>
+
+        <!-- Wheel Area -->
+        <main class="wheel-area">
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <canvas id="wheel-canvas" width="600" height="600"></canvas>
+            </div>
+        </main>
+    </div>
+
+    <!-- Cursor overlay -->
+    <div id="cursor-layer" class="cursor-layer"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="wheel.js"></script>
+    <script src="cursors.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
