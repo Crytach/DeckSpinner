@@ -1,65 +1,78 @@
-# Deploying DeckSpinner to Render (Free)
+# Deploying DeckSpinner — Full Guide
 
-Your IONOS shared hosting is PHP-only, so DeckSpinner runs on **Render.com** (free Node.js hosting).  
-Then you just link to it from your IONOS website.
+Your setup has **two parts** because IONOS shared hosting is PHP-only (no Node.js):
+
+| Part | Hosted On | What |
+|------|-----------|------|
+| **Landing page** | IONOS | Static HTML in `landing/index.html` |
+| **Spinning wheel app** | Render.com (free) | Node.js app with real-time multiplayer |
 
 ---
 
-## Step 1 — Push to GitHub
+## Part 1 — Deploy the Wheel App to Render
 
-1. Create a **new GitHub repository** (e.g. `DeckSpinner`)
-2. Push the project:
+### 1A. Push to GitHub
+
+Create a new GitHub repo and push the project (do NOT include the `landing/` folder):
 
 ```bash
 cd h:\DeckSpinner
 git init
-git add .
-git commit -m "Initial commit"
+git add server.js package.json .gitignore public/
+git commit -m "DeckSpinner app"
 git remote add origin https://github.com/YOUR_USERNAME/DeckSpinner.git
 git branch -M main
 git push -u origin main
 ```
 
-## Step 2 — Deploy on Render
+### 1B. Create a Render Web Service
 
-1. Go to [render.com](https://render.com) and sign up (free, use your GitHub account)
-2. Click **New** → **Web Service**
-3. Connect your `DeckSpinner` GitHub repo
-4. Configure:
-   - **Name**: `deckspinner` (or whatever you like)
+1. Go to [render.com](https://render.com) → sign up with GitHub
+2. Click **New** → **Web Service** → connect your `DeckSpinner` repo
+3. Set:
+   - **Name**: `deckspinner`
    - **Runtime**: `Node`
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
    - **Instance Type**: `Free`
-5. Click **Create Web Service**
+4. Click **Create Web Service**
 
-Render will build and deploy automatically. Your app will be live at:  
-`https://deckspinner.onrender.com` (or whatever name you chose)
+Your wheel is now live at: `https://deckspinner.onrender.com`
 
-> **Note**: Free tier spins down after 15 min of inactivity. First visit after idle takes ~30s to wake up.
-
-## Step 3 — Link from Your IONOS Website
-
-On your IONOS landing page, add a link:
-
-```html
-<a href="https://deckspinner.onrender.com" target="_blank">
-  🎡 Open the Spinning Wheel
-</a>
-```
+> Free tier sleeps after 15 min idle. First visit after sleep takes ~30s.
 
 ---
 
-## Optional: Custom Subdomain
+## Part 2 — Deploy the Landing Page to IONOS
 
-If you want `wheel.yourdomain.com` instead of the Render URL:
+### 2A. Update the link
 
-1. In Render dashboard → your service → **Settings** → **Custom Domains**
-2. Add `wheel.yourdomain.com`
-3. In your IONOS DNS settings, add a **CNAME record**:
-   - Name: `wheel`
-   - Target: `deckspinner.onrender.com`
-4. Wait for DNS propagation (~5 min)
+Open `landing/index.html` and change this line to your Render URL:
+
+```html
+<a href="https://deckspinner.onrender.com" class="btn-cta" target="_blank">
+```
+
+### 2B. Upload to IONOS
+
+1. Log into **IONOS** → go to **Hosting** → **File Manager** (or use FTP)
+2. Navigate to your root web directory (usually `/` or `/htdocs/`)
+3. Upload the contents of the `landing/` folder:
+   - `index.html` → upload to root
+
+That's it! Your landing page is now live at `yourdomain.com` and the "Launch the Wheel" button opens DeckSpinner on Render.
+
+---
+
+## Optional: Custom Subdomain for the Wheel
+
+Instead of `deckspinner.onrender.com`, use `wheel.yourdomain.com`:
+
+1. In Render → your service → **Settings** → **Custom Domains** → add `wheel.yourdomain.com`
+2. In IONOS → **Domains & SSL** → **DNS Settings** → add a **CNAME** record:
+   - **Hostname**: `wheel`
+   - **Points to**: `deckspinner.onrender.com`
+3. Update the link in `landing/index.html` to `https://wheel.yourdomain.com`
 
 ---
 
@@ -67,6 +80,6 @@ If you want `wheel.yourdomain.com` instead of the Render URL:
 
 | Issue | Fix |
 |-------|-----|
-| App takes 30s to load | Normal on free tier after idle — upgrade to paid ($7/mo) for instant starts |
-| Deploy fails | Check Render logs — usually a missing dependency |
-| Cursors laggy | Free tier has limited resources — works fine for small groups |
+| IONOS page shows directory listing | Make sure your file is named `index.html` in the root |
+| Wheel takes 30s to load | Normal on Render free tier after idle |
+| Render deploy fails | Check logs — usually a missing dependency |

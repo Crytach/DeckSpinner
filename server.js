@@ -72,9 +72,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('spin', () => {
-        const totalRotation = 360 * (5 + Math.random() * 5) + Math.random() * 360;
+        if (sharedSegments.length === 0) return;
+        const winnerIndex = Math.floor(Math.random() * sharedSegments.length);
         const duration = 4000 + Math.random() * 2000;
-        spinState = { targetAngle: totalRotation, duration, timestamp: Date.now() };
+        spinState = { winnerIndex, duration, timestamp: Date.now() };
         // Broadcast to ALL including sender
         io.emit('spin', spinState);
     });

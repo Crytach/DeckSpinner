@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Hub — Tools & Projects</title>
+    <meta name="description"
+        content="A collection of tools, apps, and interactive projects. Jump into any one and have fun." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a14;
+            --accent: #a78bfa;
+            --accent2: #ec4899;
+            --text: #e4e4ef;
+            --text-dim: #7a7a96;
+            --card-bg: rgba(255, 255, 255, 0.035);
+            --card-hover: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.06);
+            --font: 'Inter', system-ui, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Animated background ─────────────────── */
+        .bg-glow {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-glow::before,
+        .bg-glow::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            animation: float 14s ease-in-out infinite alternate;
+        }
+
+        .bg-glow::before {
+            width: 600px;
+            height: 600px;
+            background: var(--accent);
+            top: -200px;
+            left: -100px;
+        }
+
+        .bg-glow::after {
+            width: 500px;
+            height: 500px;
+            background: var(--accent2);
+            bottom: -200px;
+            right: -100px;
+            animation-delay: -7s;
+        }
+
+        @keyframes float {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(60px, 40px) scale(1.15);
+            }
+        }
+
+        /* ── Layout ──────────────────────────────── */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ── Nav ──────────────────────────────────── */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 0;
+        }
+
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-logo span {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ── Hero ─────────────────────────────────── */
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px;
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 5.5vw, 56px);
+            font-weight: 900;
+            line-height: 1.12;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 17px;
+            color: var(--text-dim);
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ── Section Heading ─────────────────────── */
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-top: 20px;
+        }
+
+        .section-heading h2 {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+        }
+
+        .section-heading .line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ═══════════════════════════════════════════
+       APP CARDS — add new tools/projects here
+       ═══════════════════════════════════════════ */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 20px;
+            padding-bottom: 80px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 28px 26px;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            transition: transform .2s, border-color .3s, background .3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(167, 139, 250, 0.25);
+            background: var(--card-hover);
+        }
+
+        .app-card::after {
+            content: '→';
+            position: absolute;
+            top: 26px;
+            right: 24px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dim);
+            transition: transform .2s, color .2s;
+        }
+
+        .app-card:hover::after {
+            transform: translateX(4px);
+            color: var(--accent);
+        }
+
+        .app-card .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+
+        .app-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .app-card .desc {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .app-card .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: fit-content;
+        }
+
+        /* Card accent colors — use on .icon and .tag */
+        .accent-purple .icon {
+            background: rgba(167, 139, 250, 0.12);
+        }
+
+        .accent-purple .tag {
+            background: rgba(167, 139, 250, 0.12);
+            color: #a78bfa;
+        }
+
+        .accent-pink .icon {
+            background: rgba(236, 72, 153, 0.12);
+        }
+
+        .accent-pink .tag {
+            background: rgba(236, 72, 153, 0.12);
+            color: #ec4899;
+        }
+
+        .accent-cyan .icon {
+            background: rgba(34, 211, 238, 0.12);
+        }
+
+        .accent-cyan .tag {
+            background: rgba(34, 211, 238, 0.12);
+            color: #22d3ee;
+        }
+
+        .accent-amber .icon {
+            background: rgba(251, 191, 36, 0.12);
+        }
+
+        .accent-amber .tag {
+            background: rgba(251, 191, 36, 0.12);
+            color: #fbbf24;
+        }
+
+        .accent-green .icon {
+            background: rgba(52, 211, 153, 0.12);
+        }
+
+        .accent-green .tag {
+            background: rgba(52, 211, 153, 0.12);
+            color: #34d399;
+        }
+
+        .accent-orange .icon {
+            background: rgba(249, 115, 22, 0.12);
+        }
+
+        .accent-orange .tag {
+            background: rgba(249, 115, 22, 0.12);
+            color: #f97316;
+        }
+
+        /* ── Placeholder "coming soon" card ──────── */
+        .app-card.coming-soon {
+            opacity: 0.45;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .app-card.coming-soon::after {
+            content: '';
+        }
+
+        /* ── Footer ──────────────────────────────── */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+            font-size: 13px;
+        }
+
+        /* ── Responsive ──────────────────────────── */
+        @media (max-width: 600px) {
+            .hero {
+                padding: 50px 0 40px;
+            }
+
+            .app-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <nav>
+            <!-- 🔴 CHANGE: Your site name / brand -->
+            <div class="nav-logo">⚡ <span>MyHub</span></div>
+        </nav>
+
+        <section class="hero">
+            <h1>Welcome to<br><span class="gradient">My Hub</span></h1>
+            <p>A collection of interactive tools and projects. Pick one and jump in.</p>
+        </section>
+
+        <!-- ═══════════════════════════════════════
+         APP CARDS — duplicate a card to add more
+         ═══════════════════════════════════════ -->
+        <div class="section-heading">
+            <h2>Apps &amp; Tools</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="app-grid">
+
+            <!-- ── DeckSpinner ──────────────────────── -->
+            <!-- 🔴 CHANGE: Update href to your Render URL -->
+            <a href="https://deckspinner.onrender.com" class="app-card accent-purple" target="_blank">
+                <div class="icon">🎡</div>
+                <h3>DeckSpinner</h3>
+                <p class="desc">Multiplayer spinning wheel — add options, spin, and see everyone's cursors in real time.
+                </p>
+                <span class="tag">Multiplayer</span>
+            </a>
+
+            <!-- ── Template for future app ─────────── -->
+            <!--
+      <a href="https://your-app-url.com" class="app-card accent-cyan" target="_blank">
+        <div class="icon">🎮</div>
+        <h3>App Name</h3>
+        <p class="desc">Short description of what the app does.</p>
+        <span class="tag">Category</span>
+      </a>
+      -->
+
+            <!-- ── Coming Soon placeholder ─────────── -->
+            <div class="app-card accent-pink coming-soon">
+                <div class="icon">🚀</div>
+                <h3>Coming Soon</h3>
+                <p class="desc">More tools on the way. Stay tuned!</p>
+                <span class="tag">Soon</span>
+            </div>
+
+        </div>
+
+        <footer>
+            &copy; 2026 MyHub. Built for fun.
+        </footer>
+    </div>
+</body>
+
+</html>

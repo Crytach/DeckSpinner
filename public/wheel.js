@@ -26,15 +26,40 @@ class Wheel {
     }
 
     /**
-     * Start a spin.
-     * @param {number} targetAngleDeg — total degrees to rotate
+     * Start a spin that lands on a specific segment.
+     * @param {number} winnerIndex — the segment index to land on (from server)
      * @param {number} duration — ms
      */
-    spin(targetAngleDeg, duration) {
+    spin(winnerIndex, duration) {
         if (this.spinning) return;
         this.spinning = true;
+
+        const n = this.segments.length;
+        const sliceAngle = (2 * Math.PI) / n;
+
+        // Target: pointer at top (-π/2) should point to middle of winning slice
+        // The wheel rotates by this.angle, so we need:
+        //   -(finalAngle) - π/2 ≡ winnerIndex * sliceAngle + sliceAngle/2  (mod 2π)
+        //   finalAngle = -(winnerIndex * sliceAngle + sliceAngle/2) - π/2
+        const targetRad = -(winnerIndex * sliceAngle + sliceAngle / 2) - Math.PI / 2;
+
+        // Normalize current angle to [0, 2π)
+        let currentNorm = this.angle % (2 * Math.PI);
+        if (currentNorm < 0) currentNorm += 2 * Math.PI;
+
+        // Normalize target to [0, 2π)
+        let targetNorm = targetRad % (2 * Math.PI);
+        if (targetNorm < 0) targetNorm += 2 * Math.PI;
+
+        // Calculate how much further we need to rotate (always forward)
+        let delta = targetNorm - currentNorm;
+        if (delta <= 0) delta += 2 * Math.PI;
+
+        // Add 5-8 full rotations for dramatic spin
+        const fullSpins = (5 + Math.floor(Math.random() * 4)) * 2 * Math.PI;
+        const totalRad = fullSpins + delta;
+
         const startAngle = this.angle;
-        const totalRad = (targetAngleDeg * Math.PI) / 180;
         const startTime = performance.now();
 
         const animate = (now) => {
@@ -48,9 +73,11 @@ class Wheel {
             if (t < 1) {
                 this._animId = requestAnimationFrame(animate);
             } else {
+                // Snap to exact target to avoid float drift
+                this.angle = startAngle + totalRad;
+                this._draw();
                 this.spinning = false;
-                const winner = this._getWinnerIndex();
-                if (this.onSpinEnd) this.onSpinEnd(winner);
+                if (this.onSpinEnd) this.onSpinEnd(winnerIndex);
             }
         };
 

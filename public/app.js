@@ -93,7 +93,7 @@
         socket.on('spin', (msg) => {
             winnerBox.classList.add('hidden');
             spinBtn.disabled = true;
-            wheel.spin(msg.targetAngle, msg.duration);
+            wheel.spin(msg.winnerIndex, msg.duration);
         });
 
         socket.on('connect', () => {
